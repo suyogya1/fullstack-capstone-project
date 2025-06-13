@@ -17,11 +17,11 @@ async function connectToDatabase() {
 
     // Task 1: Connect to MongoDB
     // {{insert code}}
-    await client.connect()
+    await client.connect();
 
     // Task 2: Connect to database giftDB and store in variable dbInstance
     //{{insert code}}
-    const dbInstance = client.db("giftsDB")
+    const dbInstance = client.db("giftsDB");
     // Task 3: Return database instance
     // {{insert code}}
     return dbInstance;
