@@ -2,49 +2,52 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const pinoHttp = require('pino-http');
 const pinoLogger = require('./logger');
-
 const connectToDatabase = require('./models/db');
-const {loadData} = require("./util/import-mongo/index");
-
 
 const app = express();
-app.use("*",cors());
-const port = 3060;
 
-// Connect to MongoDB; we just do this one time
-connectToDatabase().then(() => {
-    pinoLogger.info('Connected to DB');
-})
-    .catch((e) => console.error('Failed to connect to DB', e));
+// ✅ Use the dynamic port required by IBM Code Engine
+const port = process.env.PORT || 8080;
 
+// ✅ Middleware
+app.use(cors());                      // Enable CORS
+app.use(express.json());             // Parse JSON bodies
+app.use(pinoHttp({ logger: pinoLogger })); // Logging middleware
 
-app.use(express.json());
+// ✅ Connect to MongoDB
+connectToDatabase()
+  .then(() => {
+    pinoLogger.info('Connected to MongoDB');
+  })
+  .catch((error) => {
+    pinoLogger.error({ msg: 'MongoDB connection failed', error });
+    process.exit(1); // Exit on failure
+  });
 
-// Route files
+// ✅ Import Routes
 const giftRoutes = require('./routes/giftRoutes');
 const authRoutes = require('./routes/authRoutes');
 const searchRoutes = require('./routes/searchRoutes');
-const pinoHttp = require('pino-http');
-const logger = require('./logger');
 
-app.use(pinoHttp({ logger }));
-
-// Use Routes
+// ✅ Mount Routes
 app.use('/api/gifts', giftRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/search', searchRoutes);
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).send('Internal Server Error');
+// ✅ Health check route
+app.get('/', (req, res) => {
+  res.send('🎁 GiftLink API is running!');
 });
 
-app.get("/",(req,res)=>{
-    res.send("Inside the server")
-})
+// ✅ Global Error Handler
+app.use((err, req, res, next) => {
+  pinoLogger.error({ msg: 'Unhandled error', error: err });
+  res.status(500).send('Internal Server Error');
+});
 
+// ✅ Start Server
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+  console.log(`✅ Server running on port ${port}`);
 });

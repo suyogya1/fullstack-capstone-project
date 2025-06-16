@@ -3,16 +3,23 @@ const pino = require('pino');
 let logger;
 
 if (process.env.NODE_ENV !== 'production') {
-    // In non-production environments, log to the console
-    logger = pino({
-        level: 'debug',
-        transport: {
-            target: "pino-pretty",
-        },
-    });
+  // In development: pretty print to console
+  logger = pino({
+    level: 'debug',
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'SYS:standard',
+        ignore: 'pid,hostname',
+      },
+    },
+  });
 } else {
-    // production
-    logger = pino();
+  // In production: use default structured logging
+  logger = pino({
+    level: 'info',
+  });
 }
 
 module.exports = logger;

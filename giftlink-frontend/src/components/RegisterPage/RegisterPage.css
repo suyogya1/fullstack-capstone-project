@@ -1,0 +1,87 @@
+/* Container styles */
+.container {
+    padding-top: 40px;
+  }
+  
+  /* Register card styles */
+  .register-card {
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+  }
+  
+  .register-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* Heading */
+  .register-card h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  /* Form labels */
+  .register-card .form-label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  /* Input fields */
+  .register-card .form-control {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    transition: border-color 0.2s ease;
+  }
+  
+  .register-card .form-control:focus {
+    border-color: #007bff;
+    box-shadow: none;
+  }
+  
+  /* Error message */
+  .register-card .text-danger {
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 5px;
+  }
+  
+  /* Register button */
+  .register-card .btn-primary {
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: background-color 0.2s ease;
+  }
+  
+  .register-card .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Link for login */
+  .register-card p a {
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .register-card p a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 576px) {
+    .register-card {
+      padding: 20px;
+    }
+  
+    .register-card h2 {
+      font-size: 24px;
+    }
+  }
+  

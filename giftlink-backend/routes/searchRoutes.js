@@ -4,36 +4,39 @@ const connectToDatabase = require('../models/db');
 
 // Search for gifts
 router.get('/', async (req, res, next) => {
-    try {
+  try {
+    const db = await connectToDatabase();
+    const collection = db.collection('gifts');
 
-        // Task 1: Connect to MongoDB
-        const db = await connectToDatabase();
-        const collection = db.collection("gifts");
-        // Initialize the query object
-        let query = {};
+    // Initialize the query object
+    const query = {};
 
-        // Task 2: check if the name exists and is not empty
-        if (req.query.name && req.query.name.trim() !== '') {
-            query.name = { $regex: req.query.name, $options: "i" }; // Using regex for partial match, case-insensitive
-        }
-
-        // Task 3: Add other filters to the query
-        if (req.query.category) {
-            query.category = req.query.category;
-        }
-        if (req.query.condition) {
-            query.condition = req.query.condition;
-        }
-        if (req.query.age_years) {
-            query.age_years = { $lte: parseInt(req.query.age_years) };
-        }
-
-        // Task 4: Fetch filtered gifts
-        const gifts = await collection.find(query).toArray();
-        res.json(gifts);
-    } catch (e) {
-        next(e);
+    // Search by name (partial match, case-insensitive)
+    if (req.query.name?.trim()) {
+      query.name = { $regex: req.query.name.trim(), $options: 'i' };
     }
+
+    // Filter by category
+    if (req.query.category?.trim()) {
+      query.category = req.query.category.trim();
+    }
+
+    // Filter by condition
+    if (req.query.condition?.trim()) {
+      query.condition = req.query.condition.trim();
+    }
+
+    // Filter by maximum age (in years)
+    if (req.query.age_years && !isNaN(req.query.age_years)) {
+      query.age_years = { $lte: parseInt(req.query.age_years, 10) };
+    }
+
+    const gifts = await collection.find(query).toArray();
+    res.json(gifts);
+  } catch (e) {
+    console.error('Search failed:', e);
+    next(e);
+  }
 });
 
 module.exports = router;

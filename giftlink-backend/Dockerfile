@@ -8,6 +8,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3060
+EXPOSE 8080  # ✅ Required by Code Engine
 
-CMD ["node", "app.js"]
+CMD ["node", "app.js"]  # ✅ or app.js depending on your file
